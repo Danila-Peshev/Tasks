@@ -4,25 +4,38 @@ import React from 'react';
 //   .then(data => console.log(data))
 //   .catch(error => console.error(error))
 
-const currencies = [];
-  const jsonData = require('./currencies.json');
-  for (const key in jsonData.data) {
-  currencies.push(jsonData.data[key]);
-  }
+const jsonData = require('./currencies.json');
 
 function MainForm() {
   const [fromCurrency, setFromCurrency] = React.useState("USD");
   const [toCurrency, setToCurrency] = React.useState("RUB");
   const [fromPrice, setFromPrice] = React.useState(1);
-  const [toPrice, setToPrice] = React.useState(888);
+  const [toPrice, setToPrice] = React.useState((fromPrice * jsonData.data[toCurrency].value).toFixed(2));
 
-  const handleInputChange = (e) => {
-    const newValue = e.target.value;
-    console.log(newValue); 
-    setFromPrice(newValue); 
-  };
+  // React.useEffect(() => {
+  //   setToPrice((fromPrice * jsonData.data[toCurrency].value).toFixed(2));
+  //   setFromPrice((toPrice / jsonData.data[toCurrency].value).toFixed(2));
+  // }, [fromCurrency, toCurrency])
 
-  
+  const onChangeFromPrice = (value) => {
+    value = value.target.value;
+    if (parseFloat(value) < 0.00) {
+      value = 0.00;  
+    } 
+    setFromPrice(value)
+    setToPrice((value * jsonData.data[toCurrency].value).toFixed(2));
+  }
+
+  const onChangeToPrice = (value) => {
+    value = value.target.value;
+    if (parseFloat(value) < 0.00) {
+      value = 0.00;  
+    } 
+    setFromPrice((value / jsonData.data[toCurrency].value).toFixed(2));
+    setToPrice(value);
+  }
+
+
 
   return (
     <div className="main-form">
@@ -30,30 +43,33 @@ function MainForm() {
 
         <div className="row-currency">
           <p className="you-are-transferring-from-text">Вы переводите из</p>
-          <select className="select-from-currency" value={fromCurrency}>
-            {currencies.map(curr =>
-              <option value={curr.code}>{curr.code}</option>
-            )
+          <select className="select-from-currency" value={fromCurrency} onChange={e => {setFromCurrency(e.target.value)}}>  {/*FROM CURRENCY*/}
+            {
+              Object.values(jsonData.data).map((currency) =>
+                <option value={currency.code}>{currency.code}</option>
+              )
             }
           </select>
 
           <p className="in-text">в</p>
-          <select className="select-to-currency" value={toCurrency}>
-            {currencies.reverse().map(curr => 
-            <option value={curr.code}>{curr.code}</option>)
+          <select className="select-to-currency" value={toCurrency} onChange={e => {setToCurrency(e.target.value)}}>        {/*TO CURRENCY*/}
+            {
+              Object.values(jsonData.data).map((currency) =>
+                <option value={currency.code}>{currency.code}</option>
+              )
             }
           </select>
         </div>
         
         <div className="row-values">
-          <input type="number" className="from" value={fromPrice} onChange={handleInputChange}></input>
+          <input type="number" className="from" value={fromPrice} onChange={onChangeFromPrice}></input>                     {/*FROM PRICE*/}
           <p className="equal-text">=</p>
-          <input type="number" className="to"></input>
+          <input type="number" className="to" value={toPrice} onChange={onChangeToPrice}></input>                           {/*TO PRICE*/}
         </div>
+
         <div className="swap-text">
-          <a href="#">поменять валюты местами</a>
+          {/* <a>поменять валюты местами</a> */}
         </div>
-        
     </div>
   );
 }
