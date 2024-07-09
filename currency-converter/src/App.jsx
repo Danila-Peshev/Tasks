@@ -1,4 +1,5 @@
 import React from 'react';
+
 // fetch('https://api.currencyapi.com/v3/latest?apikey=cur_live_v3m1toL9UOcUiy0OylVILzh2A0IsUOFIEtEuAthJ&currencies=')
 //   .then(response => response.json())
 //   .then(data => console.log(data))
@@ -10,7 +11,7 @@ function MainForm() {
   const [fromCurrency, setFromCurrency] = React.useState("EUR");
   const [toCurrency, setToCurrency] = React.useState("RUB");
   const [fromPrice, setFromPrice] = React.useState("null");
-  const [toPrice, setToPrice] = React.useState("nul");
+  const [toPrice, setToPrice] = React.useState("null");
 
   const onChangeFromPrice = (value) => {
     if (parseFloat(value) < 0.00) {
@@ -18,7 +19,7 @@ function MainForm() {
     } 
     const leftPrice = (value / jsonData.data[fromCurrency].value);
     const rightPrice = (leftPrice * jsonData.data[toCurrency].value); 
-    setToPrice(rightPrice.toFixed(2));
+    setToPrice(rightPrice.toFixed(6));
     setFromPrice(value);
   }
 
@@ -28,7 +29,7 @@ function MainForm() {
     } 
     const leftPrice = ((jsonData.data[fromCurrency].value / jsonData.data[toCurrency].value) * value);
     setToPrice(value);
-    setFromPrice(leftPrice.toFixed(2));
+    setFromPrice(leftPrice.toFixed(6));
   }
 
   React.useEffect(() => {
@@ -41,10 +42,8 @@ function MainForm() {
 
   // function swapCurrencies() {
   //   const prevCurrency = toCurrency;
-  //   const prevPrice = fromPrice;
   //   setToCurrency(fromCurrency);
   //   setFromCurrency(prevCurrency);
-  //   onChangeFromPrice(prevPrice);
   // }
 
   return (
@@ -80,7 +79,7 @@ function MainForm() {
         </div>
 
         <div className="swap-text">
-          {/* <a onClick={swapCurrencies}>поменять валюты местами</a> */}
+          {/* <a>поменять валюты местами</a> */}
         </div>
     </div>
   );
