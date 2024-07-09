@@ -42,11 +42,8 @@ function MainForm() {
 
   function swapCurrencies() {
     const prevCurrency = toCurrency;
-    const prevPrice = fromPrice;
     setFromCurrency(prevCurrency);
     setToCurrency(fromCurrency);
-    //setFromPrice(prevPrice);
-    //setToPrice(prevPrice);
   }
 
   return (
