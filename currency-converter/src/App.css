@@ -68,8 +68,15 @@ p {
   margin: 7px;
 }
 
+a:hover {
+  color: rgba(0, 0, 0, 100%);
+  text-decoration: none;
+  cursor: pointer;
+}
+
 a {
   color: rgba(0, 0, 0, 37%);
+  text-decoration: underline;
   text-align: center;
   font-family: "Roboto", sans-serif;
   font-weight: 400;
