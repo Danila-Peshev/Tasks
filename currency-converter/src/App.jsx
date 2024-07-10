@@ -20,13 +20,14 @@ export default function MainForm() {
   const [toCurrency, setToCurrency] = React.useState("EUR");
   const [fromPrice, setFromPrice] = React.useState("null");
   const [toPrice, setToPrice] = React.useState("null");
-  const currenciesRef = React.useRef({});
+  const currenciesRef = React.useRef({undefined});
 
   React.useEffect(() => {
     fetch('https://api.currencyapi.com/v3/latest?apikey=cur_live_v3m1toL9UOcUiy0OylVILzh2A0IsUOFIEtEuAthJ&currencies=')
       .then((response) => response.json())
       .then((json) => {
         currenciesRef.current = json.data;
+        console.log(json.data)
       })
       .catch((error) => {
         console.warn(error);
