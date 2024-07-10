@@ -10,7 +10,7 @@ function Select({currenciesRef}) {
 
 function Input({value, onChangeFunction}) {
   return(
-    <input type="number" className="to-price" step={1} min={1} 
+    <input type="number" className="price-input" step={1} min={1} 
           value={value} onChange={value => onChangeFunction(value.target.value)}></input>    
   )
 }
@@ -18,9 +18,9 @@ function Input({value, onChangeFunction}) {
 export default function MainForm() { 
   const [fromCurrency, setFromCurrency] = React.useState("RUB");
   const [toCurrency, setToCurrency] = React.useState("EUR");
-  const [fromPrice, setFromPrice] = React.useState("null");
-  const [toPrice, setToPrice] = React.useState("null");
-  const currenciesRef = React.useRef({undefined});
+  const [fromPrice, setFromPrice] = React.useState();
+  const [toPrice, setToPrice] = React.useState();
+  const currenciesRef = React.useRef({});
 
   React.useEffect(() => {
     fetch('https://api.currencyapi.com/v3/latest?apikey=cur_live_v3m1toL9UOcUiy0OylVILzh2A0IsUOFIEtEuAthJ&currencies=')
@@ -70,11 +70,11 @@ export default function MainForm() {
 
         <div className="row-currency">
           <p className="you-are-transferring-from-text">Вы переводите из</p>
-          <select className="select-to-currency" value={toCurrency} onChange={e => {setToCurrency(e.target.value)}}>
+          <select className="select-currency" value={toCurrency} onChange={e => {setToCurrency(e.target.value)}}>
             <Select currenciesRef={currenciesRef}/>
           </select>
           <p className="in-text">в</p>
-          <select className="select-from-currency" value={fromCurrency} onChange={e => setFromCurrency(e.target.value)}> 
+          <select className="select-currency" value={fromCurrency} onChange={e => setFromCurrency(e.target.value)}> 
             <Select currenciesRef={currenciesRef}/>
           </select>
         </div>
