@@ -1,33 +1,36 @@
 import React from 'react';
 
-// fetch('https://api.currencyapi.com/v3/latest?apikey=cur_live_v3m1toL9UOcUiy0OylVILzh2A0IsUOFIEtEuAthJ&currencies=')
-//   .then(response => response.json())
-//   .then(data => console.log(data))
-//   .catch(error => console.error(error))
-
-const jsonData = require('./currencies.json');
-
 function MainForm() { 
+  const [data, setData] = React.useState({});
   const [fromCurrency, setFromCurrency] = React.useState("RUB");
   const [toCurrency, setToCurrency] = React.useState("EUR");
   const [fromPrice, setFromPrice] = React.useState("null");
   const [toPrice, setToPrice] = React.useState("null");
 
+  React.useEffect(() => {
+    fetch('https://api.currencyapi.com/v3/latest?apikey=cur_live_v3m1toL9UOcUiy0OylVILzh2A0IsUOFIEtEuAthJ&currencies=')
+  .then((response) => response.json())
+  .then((json) => {
+    setData(json.data);
+    console.log(json.data);
+  })
+  .catch((error) => {
+    console.warn(error);
+    alert("API Access error");
+  })
+  }, [])
+
   const onChangeFromPrice = (value) => {
-    if (parseFloat(value) < 0.00) {
-      value = 0.00;  
-    } 
-    const leftPrice = (value / jsonData.data[fromCurrency].value);
-    const rightPrice = (leftPrice * jsonData.data[toCurrency].value); 
+    value = parseFloat(value) < 0.00 ? 0.00 : value;
+    const leftPrice = (value / data[fromCurrency].value);
+    const rightPrice = (leftPrice * data[toCurrency].value); 
     setFromPrice(value);
     setToPrice(rightPrice.toFixed(6));
   }
 
   const onChangeToPrice = (value) => {
-    if (parseFloat(value) < 0.00) {
-      value = 0.00;  
-    } 
-    const leftPrice = ((jsonData.data[fromCurrency].value / jsonData.data[toCurrency].value) * value);
+    value = parseFloat(value) < 0.00 ? 0.00 : value;
+    const leftPrice = ((data[fromCurrency].value / data[toCurrency].value) * value);
     setFromPrice(leftPrice.toFixed(6));
     setToPrice(value);
   }
@@ -52,17 +55,17 @@ function MainForm() {
 
         <div className="row-currency">
           <p className="you-are-transferring-from-text">Вы переводите из</p>
-          <select className="select-to-currency" value={toCurrency} onChange={e => {setToCurrency(e.target.value)}}>        {/*TO CURRENCY*/}
+          <select className="select-to-currency" value={toCurrency} onChange={e => {setToCurrency(e.target.value)}}>
             {
-              Object.values(jsonData.data).map((currency) =>
+              Object.values(data).map((currency) =>
                 <option value={currency.code}>{currency.code}</option>
               )
             }
           </select>
           <p className="in-text">в</p>
-          <select className="select-from-currency" value={fromCurrency} onChange={e => setFromCurrency(e.target.value)}>  {/*FROM CURRENCY*/}
+          <select className="select-from-currency" value={fromCurrency} onChange={e => setFromCurrency(e.target.value)}> 
             {
-              Object.values(jsonData.data).map((currency) =>
+              Object.values(data).map((currency) =>
                 <option value={currency.code}>{currency.code}</option>
               )
             }
