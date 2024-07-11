@@ -4,7 +4,8 @@ import "./App.css";
 
 import App from "./App";
 
-const root = createRoot(document.getElementById("root"));
+const rootElement = document.getElementById('app-root');
+const root = createRoot(rootElement);
 root.render(
   <StrictMode>
     <App />

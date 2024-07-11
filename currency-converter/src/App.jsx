@@ -1,106 +1,118 @@
-import React from 'react';
+import React from "react";
 
-function Select({currencies}) {
-// Проверка, что объект currencies не null и не undefined
-if (!currencies) {
-return <option>Loading...</option>;
+function Select({ currencies, value, onChangeFunction }) {
+  if (!currencies) {
+    return <select className="select-currency"></select>;
+  }
+
+  return (
+    <select className="select-currency" 
+    value={value} 
+    onChange={onChangeFunction}>
+      {
+        Object.values(currencies).map((currency, index) => 
+          <option key={index} value={currency.code}>{currency.code}</option>
+        )
+      }
+    </select>
+  );
 }
 
-return(
-Object.values(currencies).map((currency, index) =>
-<option key={index} value={currency.code}>{currency.code}</option>
-)
-);
-}
+function Input({ value, onChangeFunction }) {
+  const handleChange = (event) => {
+    if (event.target.value !== null) {
+      onChangeFunction(event.target.value);
+    }
+  };
 
-function Input({value, onChangeFunction}) {
-// Проверка, что value не null и не undefined
-const handleChange = (event) => {
-if (event.target.value !== null) {
-onChangeFunction(event.target.value);
-}
-};
-
-return(
-<input type="number" className="price-input" step={1} min={1}
-value={value || ''} // Если value равно null, используем пустую строку
-onChange={handleChange}></input>
-)
+  return (
+    <input
+      type="number"
+      className="price-input"
+      step={1}
+      min={1}
+      value={value || ""}
+      onChange={handleChange}
+    ></input>
+  );
 }
 
 export default function MainForm() {
-const [fromCurrency, setFromCurrency] = React.useState("RUB");
-const [toCurrency, setToCurrency] = React.useState("EUR");
-const [fromPrice, setFromPrice] = React.useState(null);
-const [toPrice, setToPrice] = React.useState(null);
-const [currencies, setCurrencies] = React.useState(null);
+  const [fromCurrency, setFromCurrency] = React.useState("RUB");
+  const [toCurrency, setToCurrency] = React.useState("EUR");
+  const [fromPrice, setFromPrice] = React.useState(undefined);
+  const [toPrice, setToPrice] = React.useState(undefined);
+  const [currencies, setCurrencies] = React.useState(undefined);
 
-React.useEffect(() => {
-fetch('https://api.currencyapi.com/v3/latest?apikey=cur_live_3aL8lHHhS1QiGpK6jEy3wew8kSVUJgCeSyyGsaJo&currencies=')
-.then((response) => response.json())
-.then((json) => {
-setCurrencies(json.data);
-console.log(json.data)
-})
-.catch((error) => {
-console.warn(error);
-alert("API Access error");
-})
-}, [])
+  React.useEffect(() => {
+    fetch("https://api.currencyapi.com/v3/latest?apikey=" + process.env.REACT_APP_EXAMPLE_CURRENCY_API_KEY + "&currencies=")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then((json) => {
+        setCurrencies(json.data);
+      })
+      .catch((error) => {
+        console.warn(error);
+        alert("API Access error: " + error.message);
+      });
+  }, []);
 
-const onChangeFromPrice = (value) => {
-value = parseFloat(value) < 0.00 ? 0.00 : value;
-const leftPrice = currencies ? (value / currencies[fromCurrency].value) : 1;
-const rightPrice = currencies ? (leftPrice * currencies[toCurrency].value) : 1;
-setFromPrice(value);
-setToPrice(rightPrice.toFixed(6));
-}
+  const onChangeFromPrice = (value) => {
+    if (currencies) {
+    let newValue = parseFloat(value) < 0.0 ? 0.0 : value;
+    const leftPrice = newValue / currencies[fromCurrency].value;
+    const rightPrice = leftPrice * currencies[toCurrency].value;
+    setFromPrice(newValue);
+    setToPrice(rightPrice.toFixed(6));
+    }
+  };
 
-const onChangeToPrice = (value) => {
-value = parseFloat(value) < 0.00 ? 0.00 : value;
-const leftPrice = currencies ? ((currencies[fromCurrency].value / currencies[toCurrency].value) * value) : 1;
-setFromPrice(leftPrice.toFixed(6));
-setToPrice(value);
-}
+  const onChangeToPrice = (value) => {
+    if (currencies) {
+      let newValue = parseFloat(value) < 0.0 ? 0.0 : value;
+      const leftPrice = (currencies[fromCurrency].value / currencies[toCurrency].value) * newValue;
+      setFromPrice(leftPrice.toFixed(6));
+      setToPrice(newValue);
+    }
+  };
 
-React.useEffect(() => {
-onChangeFromPrice(fromPrice);
-}, [fromCurrency, currencies]);
+  React.useEffect(() => {
+    onChangeFromPrice(fromPrice);
+  }, [fromCurrency, currencies]);
 
-React.useEffect(() => {
-onChangeToPrice(toPrice);
-}, [toCurrency, currencies]);
+  React.useEffect(() => {
+    onChangeToPrice(toPrice);
+  }, [toCurrency, currencies]);
 
-function swapCurrencies() {
-const prevCurrency = toCurrency;
-setFromCurrency(prevCurrency);
-setToCurrency(fromCurrency);
-}
+  function swapCurrencies() {
+    const prevCurrency = toCurrency;
+    setFromCurrency(prevCurrency);
+    setToCurrency(fromCurrency);
+  }
 
-return (
-<div className="main-form">
-<h1 className="title">Конвертер валют</h1>
-
-    <div className="row-currency">
-      <p className="you-are-transferring-from-text">Вы переводите из</p>
-      <select className="select-currency" value={toCurrency} onChange={e => {setToCurrency(e.target.value)}}>
-        <Select currencies={currencies}/> {/* Исправление опечатки */}
-    </select>
-      <p className="in-text">в</p>
-      <select className="select-currency" value={fromCurrency} onChange={e => setFromCurrency(e.target.value)}> 
-        <Select currencies={currencies}/> {/* Исправление опечатки */}
-    </select>
+  return (
+    <div className="main-form">
+      <h1 className="title">Конвертер валют</h1>
+      <div className="row-currency">
+        <p className="you-are-transferring-from-text">Вы переводите из</p>
+        <Select currencies={currencies} value={toCurrency} onChangeFunction={e => {setToCurrency(e.target.value)}}/>
+        <p className="in-text">в</p>
+        <Select currencies={currencies} value={fromCurrency} onChangeFunction={e => {setFromCurrency(e.target.value)}}/>
+      </div>
+      <div className="row-values">
+        <Input value={toPrice} onChangeFunction={onChangeToPrice} />
+        <p className="equal-text">=</p>
+        <Input value={fromPrice} onChangeFunction={onChangeFromPrice} />
+      </div>
+      <div className="swap-text">
+        <button className="swap-button" onClick={swapCurrencies}>
+          поменять валюты местами
+        </button>
+      </div>
     </div>
-    
-    <div className="row-values">
-      <Input value={toPrice} onChangeFunction={onChangeToPrice} />
-      <p className="equal-text">=</p>
-      <Input value={fromPrice} onChangeFunction={onChangeFromPrice} />  
-    </div>
-
-    <div className="swap-text">
-      <a onClick={swapCurrencies}>поменять валюты местами</a>
-    </div>
-</div>
-);
+  );
 }

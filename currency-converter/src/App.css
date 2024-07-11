@@ -1,98 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+body {
+  background-color: rgba(0, 0, 0, 0.301);
+  display: flex;
+  justify-content: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28.13px;
+}
 .row-currency {
   display: flex;
   align-items: center;
-  width: 100%;
   flex-direction: row;
   justify-content: left;
+  margin-left: 61px;
 }
-
-.price-input {
-  width: 138px;
+.price-input, .select-currency {
+  box-sizing: border-box;
+  width: 150px;
   height: 35px;
   border: 1px solid rgb(0, 0, 0);
-
-  padding-left: 15px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
-  line-height: 28.13px;
+  padding-left: 10px;
   text-align: left;
 }
-
+.price-input, .select-currency, .swap-button {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28.13px;
+}
 .select-currency {
-  width: 156px;
-  height: 41px;
-  border: 1px solid rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
-  
-  padding-left: 15px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
-  line-height: 28.13px;
-  text-align: left;
-
 }
-
 .in-text {
-  margin: 10px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
-  line-height: 28.13px;
+  margin: 7px;
 }
-
 .you-are-transferring-from-text {
   margin-right: 7px;
-  margin-left: 30px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
-  line-height: 28.13px;
 }
-
 .equal-text {
   margin: 7px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
-  line-height: 28.13px;
 }
-
-a:hover {
+.swap-button:hover {
   color: rgba(0, 0, 0, 100%);
   text-decoration: none;
   cursor: pointer;
 }
-
-a {
+.swap-button {
   color: rgba(0, 0, 0, 37%);
   text-decoration: underline;
   text-align: center;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
-  line-height: 28.13px;
+  background:none;
+  border:none;
 }
 .swap-text {
   margin-top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
-  line-height: 28.13px;
 }
-
 .row-values {
   margin-top: 10px;
   display: flex;
@@ -102,23 +68,14 @@ a {
   justify-content: center;
   flex-wrap: nowrap;
 }
-  
 .title {
   width: 800px;
   height: 24px;
-
-  margin-top: 100px;
-  margin-bottom: 50px;
-
-  font-family: "Roboto", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 28.13px;
+  margin: 100px 0 30px;
   text-align: center;
-
+  font-weight: 700;
+  font-size: 24px;
 }
-
 .main-form {
   width: 800px;
   height: 600px;
@@ -126,10 +83,4 @@ a {
   background-color: rgb(255, 255, 255);
   border: 1px solid rgb(255, 255, 255);
   position: relative;
-}
-
-body {
-  background-color: rgba(0, 0, 0, 0.301);
-  display: flex;
-  justify-content: center;
 }
