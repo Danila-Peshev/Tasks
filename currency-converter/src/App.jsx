@@ -63,19 +63,19 @@ export default function MainForm() {
 
   const onChangeFromPrice = (value) => {
     if (currencies) {
-    let newValue = parseFloat(value) < 0.0 ? 0.0 : value;
-    const leftPrice = newValue / currencies[fromCurrency].value;
-    const rightPrice = leftPrice * currencies[toCurrency].value;
-    setFromPrice(newValue);
-    setToPrice(rightPrice.toFixed(6));
+      let newValue = parseFloat(value) < 0.0 ? 0.0 : value;
+      const fromPriceConverted = newValue / currencies[fromCurrency].value;
+      const toPriceConverted = fromPriceConverted * currencies[toCurrency].value;
+      setFromPrice(newValue);
+      setToPrice(toPriceConverted.toFixed(6));
     }
   };
-
+  
   const onChangeToPrice = (value) => {
     if (currencies) {
       let newValue = parseFloat(value) < 0.0 ? 0.0 : value;
-      const leftPrice = (currencies[fromCurrency].value / currencies[toCurrency].value) * newValue;
-      setFromPrice(leftPrice.toFixed(6));
+      const toPriceConverted = (currencies[fromCurrency].value / currencies[toCurrency].value) * newValue;
+      setFromPrice(toPriceConverted.toFixed(6));
       setToPrice(newValue);
     }
   };
