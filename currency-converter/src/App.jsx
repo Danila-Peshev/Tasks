@@ -1,69 +1,33 @@
-import React from "react";
+import { useState, useEffect } from "react";
 
-function Select({ currencies, value, onChangeFunction }) {
-  if (!currencies) {
-    return <select className="select-currency"></select>;
-  }
-
-  return (
-    <select className="select-currency" 
-    value={value} 
-    onChange={onChangeFunction}>
-      {
-        Object.values(currencies).map((currency, index) => 
-          <option key={index} value={currency.code}>{currency.code}</option>
-        )
-      }
-    </select>
-  );
-}
-
-function Input({ value, onChangeFunction }) {
-  const handleChange = (event) => {
-    if (event.target.value !== null) {
-      onChangeFunction(event.target.value);
-    }
-  };
-
-  return (
-    <input
-      type="number"
-      className="price-input"
-      step={1}
-      min={1}
-      value={value || ""}
-      onChange={handleChange}
-    ></input>
-  );
-}
+import Select from "./components/Select/Select";
+import Input  from "./components/Input/Input";
 
 export default function MainForm() {
-  const [fromCurrency, setFromCurrency] = React.useState("RUB");
-  const [toCurrency, setToCurrency] = React.useState("EUR");
-  const [fromPrice, setFromPrice] = React.useState(undefined);
-  const [toPrice, setToPrice] = React.useState(undefined);
-  const [currencies, setCurrencies] = React.useState(undefined);
+  const [fromCurrency, setFromCurrency] = useState("RUB");
+  const [toCurrency, setToCurrency] = useState("EUR");
+  const [fromPrice, setFromPrice] = useState();
+  const [toPrice, setToPrice] = useState();
+  const [currencies, setCurrencies] = useState();
 
-  React.useEffect(() => {
-    fetch("https://api.currencyapi.com/v3/latest?apikey=" + process.env.REACT_APP_EXAMPLE_CURRENCY_API_KEY + "&currencies=")
-      .then((response) => {
+  useEffect(() => {
+    (async () => {
+      const response = await fetch("https://api.currencyapi.com/v3/latest?apikey=cur_live_3aL8lHHhS1QiGpK6jEy3wew8kSVUJgCeSyyGsaJo&currencies=");
+      try {
         if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
+          throw new Error("An error has occured: " + response.status);
         }
-        return response.json();
-      })
-      .then((json) => {
-        setCurrencies(json.data);
-      })
-      .catch((error) => {
-        console.warn(error);
-        alert("API Access error: " + error.message);
-      });
+        const result = await response.json();
+        setCurrencies(result.data);
+      } catch (err) {
+        alert(err);
+      }
+    })();
   }, []);
 
   const onChangeFromPrice = (value) => {
     if (currencies) {
-      let newValue = parseFloat(value) < 0.0 ? 0.0 : value;
+      const newValue = parseFloat(value) < 0.0 ? 0.0 : value;
       const fromPriceConverted = newValue / currencies[fromCurrency].value;
       const toPriceConverted = fromPriceConverted * currencies[toCurrency].value;
       setFromPrice(newValue);
@@ -73,29 +37,34 @@ export default function MainForm() {
   
   const onChangeToPrice = (value) => {
     if (currencies) {
-      let newValue = parseFloat(value) < 0.0 ? 0.0 : value;
+      const newValue = parseFloat(value) < 0.0 ? 0.0 : value;
       const toPriceConverted = (currencies[fromCurrency].value / currencies[toCurrency].value) * newValue;
       setFromPrice(toPriceConverted.toFixed(6));
       setToPrice(newValue);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     onChangeFromPrice(fromPrice);
   }, [fromCurrency, currencies]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     onChangeToPrice(toPrice);
   }, [toCurrency, currencies]);
 
   function swapCurrencies() {
-    const prevCurrency = toCurrency;
-    setFromCurrency(prevCurrency);
+    setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
   }
 
+  if (!currencies) {
+    return (
+      <></>
+    )
+  }
+
   return (
-    <div className="main-form">
+    <>
       <h1 className="title">Конвертер валют</h1>
       <div className="row-currency">
         <p className="you-are-transferring-from-text">Вы переводите из</p>
@@ -113,6 +82,6 @@ export default function MainForm() {
           поменять валюты местами
         </button>
       </div>
-    </div>
+      </>
   );
 }
