@@ -12,9 +12,9 @@ export default function MainForm() {
 
   useEffect(() => {
     (async () => {
-      const response = await fetch("https://api.currencyapi.com/v3/latest?apikey=" 
-        + process.env.REACT_APP_EXAMPLE_CURRENCY_API_KEY + "&currencies=");
       try {
+        const response = await fetch("https://api.currencyapi.com/v3/latest?apikey=" 
+          + process.env.REACT_APP_EXAMPLE_CURRENCY_API_KEY + "&currencies=");
         const result = await response.json();
         setCurrencies(result.data);
       } catch (err) {
