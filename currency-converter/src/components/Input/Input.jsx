@@ -1,7 +1,7 @@
 export default function Input({ value, onChangeFunction }) {
     const handleChange = (event) => {
       if (event.target.value !== null) {
-        onChangeFunction(event.target.value);
+        onChangeFunction(parseFloat(event.target.value) < 0.0 ? 0.0 : event.target.value);
       }
     };
   
